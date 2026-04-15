@@ -13,23 +13,7 @@ const state = {
     theme: localStorage.getItem('theme') || 'dark',
     currentView: 'login',
     sidebarOpen: true,
-    courses: JSON.parse(localStorage.getItem('courses')) || [
-        { 
-            id: 'math1', title: 'Matemática 1', professor: 'Guilherme Cecílio', 
-            curriculum: [
-                {
-                    id: 'c1',
-                    title: 'Capítulo Inicial',
-                    lessons: [
-                        { id: 'l1', title: 'Aula 04 - Logaritmos Parte 1', videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ', pdfUrl: '#' }
-                    ]
-                }
-            ]
-        },
-        { id: 'math2', title: 'Matemática 2', professor: 'Bruno de Paula', curriculum: [] },
-        { id: 'math_basic', title: 'Matemática Básica', professor: 'Simplifica', curriculum: [] },
-        { id: 'combinatorics', title: 'Análise Combinatória', professor: 'Bruno de Paula', curriculum: [] },
-    ],
+    courses: JSON.parse(localStorage.getItem('courses')) || [],
 
     logos: {
         light: 'logo/LOGO SIMPLIFICA ENEM (2).png',
@@ -194,8 +178,42 @@ function init() {
 
     if (migrated) saveState();
 
+    // Inicia a carga de dados em DataLayer
+    fetchServerData();
+
     render();
 }
+
+async function fetchServerData() {
+    try {
+        // O Endereço oficial em Nuvem do Webhook do seu N8N hospedado de forma definitiva no Coolify (produção)
+        const N8N_URL = 'http://n8n-v5yewk50yi2c3m02f109vjn7.2.24.202.235.sslip.io/webhook/courses'; 
+        
+        // Timeout defensivo de 3 segundos
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 3000);
+
+        const res = await fetch(N8N_URL, { signal: controller.signal });
+        clearTimeout(timeoutId);
+        
+        if (res.ok) {
+            const data = await res.json();
+            if (data && Array.isArray(data)) {
+                // Atualiza em background e salva cache
+                state.courses = data;
+                localStorage.setItem('courses', JSON.stringify(data));
+                
+                // Se a view atual depender disso, renderizamos
+                if (state.currentView === 'courses' || state.currentView === 'dashboard') {
+                    render();
+                }
+            }
+        }
+    } catch (e) {
+        console.warn("Plataforma Simplifica: Motor Offline First carregando do cache. Integração N8N inacessível.");
+    }
+}
+
 
 // --- Theme Management ---
 function toggleTheme() {
