@@ -109,9 +109,23 @@ const state = {
 
 let cropperInstance = null;
 
+async function autoSaveToServer() {
+    if (state.user && state.user.role === 'admin') {
+        try {
+            // Webhook Fire-and-Forget
+            fetch('http://n8n-v5yewk50yi2c3m02f109vjn7.2.24.202.235.sslip.io:5678/webhook/update-courses', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ courses: state.courses })
+            }).catch(() => {}); // catch silently inline
+        } catch(e) {}
+    }
+}
+
 const saveState = () => {
     localStorage.setItem('user', JSON.stringify(state.user));
     localStorage.setItem('courses', JSON.stringify(state.courses));
+    autoSaveToServer();
     localStorage.setItem('students', JSON.stringify(state.students));
     localStorage.setItem('planning', JSON.stringify(state.planning));
     localStorage.setItem('courseStartDate', state.courseStartDate);
@@ -2121,4 +2135,5 @@ function renderMobileNav() {
         </nav>
     `;
 }
+
 
