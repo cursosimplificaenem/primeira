@@ -112,7 +112,7 @@ let cropperInstance = null;
 async function autoSaveToServer() {
     if (state.user && state.user.role === 'admin') {
         try {
-            const res = await fetch('http://n8n-v5yewk50yi2c3m02f109vjn7.2.24.202.235.sslip.io:5678/webhook/update-courses', {
+            const res = await fetch('http://n8n-v5yewk50yi2c3m02f109vjn7.2.24.202.235.sslip.io/webhook/update-courses', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ courses: state.courses })
@@ -2139,6 +2139,7 @@ function renderMobileNav() {
         </nav>
     `;
 }
+
 
 
 
