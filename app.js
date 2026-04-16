@@ -118,10 +118,10 @@ async function autoSaveToServer() {
                 body: JSON.stringify({ courses: state.courses })
             });
             if (!res.ok) {
-                alert('Atenção: A plataforma não conseguiu sincronizar com o N8N. As alterações não estão sendo salvas na nuvem! Status: ' + res.status);
+                console.warn('Falha persistente na sincronização. N8N Webhook não ativado ou CORS.');
             }
         } catch(e) {
-            alert('Atenção: Erro de conexão com o N8N. Servidor fora do ar ou Webhook não ativado! As alterações não estão sendo salvas na nuvem.');
+            console.warn('Falha persistente na sincronização. N8N Webhook não ativado ou CORS.');
         }
     }
 }
@@ -2139,6 +2139,7 @@ function renderMobileNav() {
         </nav>
     `;
 }
+
 
 
 
