@@ -922,7 +922,7 @@ function renderStudentDashboard() {
                 <div class="glass" style="padding: 32px;">
                     <h3 class="mb-6">Continue de onde parou</h3>
                     ${(() => {
-                        const course = state.courses.find(c => c.id === state.lastViewedCourseId);
+                        let course = state.courses.find(c => c.id === state.lastViewedCourseId);
                         let lesson = null;
                         let chapter = null;
                         if (course && course.curriculum) {
@@ -2139,6 +2139,7 @@ function renderMobileNav() {
         </nav>
     `;
 }
+
 
 
 
