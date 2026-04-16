@@ -112,13 +112,17 @@ let cropperInstance = null;
 async function autoSaveToServer() {
     if (state.user && state.user.role === 'admin') {
         try {
-            // Webhook Fire-and-Forget
-            fetch('http://n8n-v5yewk50yi2c3m02f109vjn7.2.24.202.235.sslip.io:5678/webhook/update-courses', {
+            const res = await fetch('http://n8n-v5yewk50yi2c3m02f109vjn7.2.24.202.235.sslip.io:5678/webhook/update-courses', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ courses: state.courses })
-            }).catch(() => {}); // catch silently inline
-        } catch(e) {}
+            });
+            if (!res.ok) {
+                alert('Atenção: A plataforma não conseguiu sincronizar com o N8N. As alterações não estão sendo salvas na nuvem! Status: ' + res.status);
+            }
+        } catch(e) {
+            alert('Atenção: Erro de conexão com o N8N. Servidor fora do ar ou Webhook não ativado! As alterações não estão sendo salvas na nuvem.');
+        }
     }
 }
 
@@ -2135,5 +2139,6 @@ function renderMobileNav() {
         </nav>
     `;
 }
+
 
 
