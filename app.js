@@ -909,7 +909,7 @@ function renderStudentDashboard() {
                         let chapter = null;
                         if (course && course.curriculum) {
                             course.curriculum.forEach(ch => {
-                                const found = ch.lessons.find(l => l.id === state.lastViewedLessonId);
+                                const found = ch.lessons?.find(l => l.id === state.lastViewedLessonId);
                                 if (found) {
                                     lesson = found;
                                     chapter = ch;
@@ -918,9 +918,13 @@ function renderStudentDashboard() {
                         }
                         
                         // Default if nothing found (safety)
-                        if (!lesson) {
+                        if (!lesson && state.courses?.[0]?.curriculum?.[0]?.lessons?.[0]) {
                             lesson = state.courses[0].curriculum[0].lessons[0];
                             chapter = state.courses[0].curriculum[0];
+                        }
+
+                        if (!lesson) {
+                            return `<div style="padding: 16px; background: rgba(0,0,0,0.2); border-radius: 12px; text-align: center; color: var(--text-muted);">Nenhuma aula em andamento.</div>`;
                         }
 
                         const tubeId = getYouTubeId(lesson.videoUrl);
