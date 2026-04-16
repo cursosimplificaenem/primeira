@@ -128,6 +128,20 @@ const BRAND_ICON = `<img src="logo/LOGO SIMPLIFICA ENEM ICONE (1).png" alt="Simp
 // --- Initialization ---
 
 function init() {
+    let needsWipe = false;
+    if (!Array.isArray(state.planning) || state.planning.length === 0 || !state.planning[0].days) {
+        localStorage.removeItem('planning');
+        needsWipe = true;
+    }
+    if (!Array.isArray(state.students) || state.students.length === 0) {
+        localStorage.removeItem('students');
+        needsWipe = true;
+    }
+    if (needsWipe) {
+        location.reload();
+        return;
+    }
+
     document.documentElement.setAttribute('data-theme', state.theme);
     
     // Migration: Update any 19:xx to 20:xx in existing local storage data
@@ -549,33 +563,39 @@ function savePlanning() {
 
 // --- Auth ---
 window.handleLogin = function(event) {
-    event.preventDefault();
-    const email = document.getElementById('loginEmail').value.trim();
-    const password = document.getElementById('loginPassword').value.trim();
-    
-    if (email === 'professor@simplifica.com' && password === 'admin') {
-        state.user.role = 'admin';
-        state.user.name = "Prof. Bruno / Guilherme";
-        state.user.id = 'admin';
-        state.user.isLoggedIn = true;
-        state.currentView = 'admin_dashboard';
-        saveState();
-        render();
-    } else if (email === 'aluno@simplifica.com' && password === '123') {
-        state.user.role = 'student';
-        const student = state.students[0] || { name: 'Aluno Simplifica', id: 1 };
-        state.user.name = student.name;
-        state.user.id = student.id;
-        state.user.isLoggedIn = true;
-        state.currentView = 'dashboard';
-        saveState();
-        render();
-    } else {
-        const errorEl = document.getElementById('loginError');
-        if (errorEl) {
-            errorEl.style.display = 'block';
-            setTimeout(() => { errorEl.style.display = 'none'; }, 3000);
+    try {
+        event.preventDefault();
+        const email = document.getElementById('loginEmail').value.trim();
+        const password = document.getElementById('loginPassword').value.trim();
+        
+        if (email === 'professor@simplifica.com' && password === 'admin') {
+            state.user.role = 'admin';
+            state.user.name = "Prof. Bruno / Guilherme";
+            state.user.id = 'admin';
+            state.user.isLoggedIn = true;
+            state.currentView = 'admin_dashboard';
+            saveState();
+            render();
+        } else if (email === 'aluno@simplifica.com' && password === '123') {
+            state.user.role = 'student';
+            const student = state.students && state.students[0] ? state.students[0] : { name: 'Aluno Simplifica', id: 1 };
+            state.user.name = student.name;
+            state.user.id = student.id;
+            state.user.isLoggedIn = true;
+            state.currentView = 'dashboard';
+            saveState();
+            render();
+        } else {
+            const errorEl = document.getElementById('loginError');
+            if (errorEl) {
+                errorEl.style.display = 'block';
+                setTimeout(() => { errorEl.style.display = 'none'; }, 3000);
+            }
         }
+    } catch (e) {
+        alert("Ocorreu um erro no cache do seu navegador que corrompeu o Cronograma. O sistema será reaberto do zero. Erro: " + e.message);
+        localStorage.clear();
+        location.reload();
     }
 }
 
