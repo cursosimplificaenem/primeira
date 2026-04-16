@@ -128,6 +128,35 @@ const BRAND_ICON = `<img src="logo/LOGO SIMPLIFICA ENEM ICONE (1).png" alt="Simp
 // --- Initialization ---
 
 function init() {
+
+    if (!state.planning || !Array.isArray(state.planning) || state.planning.length === 0 || !state.planning[0].days) {
+        localStorage.removeItem('planning');
+        location.reload();
+        return;
+    }
+    
+    if (!state.students || !Array.isArray(state.students) || state.students.length === 0) {
+        localStorage.removeItem('students');
+        location.reload();
+        return;
+    }
+
+    // Validação de Integridade do Cache Core
+    let needsWipe = false;
+    if (!state.planning || !Array.isArray(state.planning) || state.planning.length === 0 || !state.planning[0].days) {
+        localStorage.removeItem('planning');
+        needsWipe = true;
+    }
+    if (!state.students || !Array.isArray(state.students) || state.students.length === 0) {
+        localStorage.removeItem('students');
+        needsWipe = true;
+    }
+    if (needsWipe) {
+        alert("Cache inconsistente detectado. Atualizando sistema...");
+        location.reload();
+        return;
+    }
+
     document.documentElement.setAttribute('data-theme', state.theme);
     
     // Migration: Update any 19:xx to 20:xx in existing local storage data
@@ -549,6 +578,7 @@ function savePlanning() {
 
 // --- Auth ---
 window.handleLogin = function(event) {
+  try {
     event.preventDefault();
     const email = document.getElementById('loginEmail').value.trim();
     const password = document.getElementById('loginPassword').value.trim();
