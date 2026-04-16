@@ -197,7 +197,16 @@ async function fetchServerData() {
         clearTimeout(timeoutId);
         
         if (res.ok) {
-            const data = await res.json();
+            let data = await res.json();
+            console.log("N8N Payload Recebido:", data);
+            
+            // Corrige se o N8N retornar o array encapsulado do Postgres
+            if (data && data.courses && Array.isArray(data.courses)) {
+                data = data.courses;
+            } else if (data && data.length > 0 && data[0].courses) {
+                data = data[0].courses;
+            }
+
             if (data && Array.isArray(data)) {
                 // Atualiza em background e salva cache
                 state.courses = data;
@@ -207,10 +216,12 @@ async function fetchServerData() {
                 if (state.currentView === 'courses' || state.currentView === 'dashboard') {
                     render();
                 }
+            } else {
+                console.warn("N8N Payload não é um Array de Cursos válido.", data);
             }
         }
     } catch (e) {
-        console.warn("Plataforma Simplifica: Motor Offline First carregando do cache. Integração N8N inacessível.");
+        console.warn("Plataforma Simplifica: Motor Offline First carregando do cache. Integração N8N inacessível.", e);
     }
 }
 
