@@ -1911,12 +1911,17 @@ function renderProfile() {
                     ${state.user.name.charAt(0)}
                 </div>
                 <h3 style="margin-bottom: 4px;">${state.user.name}</h3>
-                <p style="margin-bottom: 24px;">Estudante Simplifica</p>
+                <p style="margin-bottom: 24px;">${state.user.role === 'admin' ? 'Coordenador(a)' : 'Estudante Simplifica'}</p>
 
                 
                 <div style="display: flex; flex-direction: column; gap: 12px;">
                     <button class="btn" style="width: 100%; border: 1px solid var(--border); background: var(--bg-main); justify-content: center;">Alterar Foto</button>
+                                        <button class="btn" style="width: 100%; border: 1px solid var(--border); background: var(--bg-main); justify-content: center;">Alterar Foto</button>
                     <button class="btn" style="width: 100%; border: 1px solid var(--border); background: var(--bg-main); justify-content: center;">Redefinir Senha</button>
+                    <!-- Botao Mobile Sair -->
+                    <button class="btn" style="width: 100%; border: 1px solid var(--danger); background: rgba(239, 68, 68, 0.1); color: var(--danger); justify-content: center; margin-top: 12px;" onclick="logout()">
+                        <i data-lucide="log-out"></i> Sair da Plataforma
+                    </button>
                 </div>
             </div>
 
@@ -2112,3 +2117,4 @@ function renderMobileNav() {
         </nav>
     `;
 }
+
