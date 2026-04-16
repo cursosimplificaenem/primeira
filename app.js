@@ -619,7 +619,7 @@ function render() {
                     ${renderCurrentView()}
                 </div>
             </main>
-              `${renderMobileNav()}
+              ${renderMobileNav()}
         `;
     }
     
@@ -2068,27 +2068,27 @@ window.addEventListener('DOMContentLoaded', init);
 
 
 
+
 function renderMobileNav() {
     const mobileMenuItems = state.user.role === 'student' ? [
-        { id: 'dashboard', icon: 'layout-dashboard', label: 'InÌcio' },
+        { id: 'dashboard', icon: 'layout-dashboard', label: 'In√≠cio' },
         { id: 'courses', icon: 'book-open', label: 'Cursos' },
         { id: 'cronograma', icon: 'calendar', label: 'Rotina' },
         { id: 'profile', icon: 'user', label: 'Perfil' }
     ] : [
-        { id: 'admin_dashboard', icon: 'bar-chart-3', label: 'MÈtricas' },
+        { id: 'admin_dashboard', icon: 'bar-chart-3', label: 'Estat√≠sticas' },
         { id: 'admin_content', icon: 'upload-cloud', label: 'Aulas' },
         { id: 'profile', icon: 'user', label: 'Perfil' }
     ];
 
-    return 
+    return `
         <nav class="mobile-nav glass">
-             + mobileMenuItems.map(item => 
-                <button class="mobile-nav-item  + (state.currentView === item.id ? 'active' : '') + " onclick="navigate(' + item.id + ')">
-                    <i data-lucide=" + item.icon + "></i>
-                    <span> + item.label + </span>
+            ${mobileMenuItems.map(item => `
+                <button class="mobile-nav-item ${state.currentView === item.id ? 'active' : ''}" onclick="navigate('${item.id}')">
+                    <i data-lucide="${item.icon}"></i>
+                    <span>${item.label}</span>
                 </button>
-            ).join('') + 
+            `).join('')}
         </nav>
-    ;
+    `;
 }
-
