@@ -246,6 +246,8 @@ async function fetchServerData() {
 
             if (data && Array.isArray(data)) {
                 // Atualiza em background e salva cache
+                // Sanitiza: garante que todo curso tenha curriculum valido
+                data.forEach(function(c) { if (!c.curriculum) c.curriculum = []; c.curriculum.forEach(function(ch) { if (!ch.lessons) ch.lessons = []; }); });
                 state.courses = data;
                 localStorage.setItem('courses', JSON.stringify(data));
                 
@@ -937,8 +939,9 @@ function renderStudentDashboard() {
                         
                         // Default if nothing found (safety)
                         if (!lesson && state.courses?.[0]?.curriculum?.[0]?.lessons?.[0]) {
-                            lesson = state.courses[0].curriculum[0].lessons[0];
-                            chapter = state.courses[0].curriculum[0];
+                            course = state.courses[0];
+                            lesson = course.curriculum[0].lessons[0];
+                            chapter = course.curriculum[0];
                         }
 
                         if (!lesson) {
