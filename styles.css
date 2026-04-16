@@ -253,3 +253,100 @@ p { color: var(--text-muted); line-height: 1.6; }
     box-shadow: 0 10px 40px rgba(0,0,0,0.5);
     background: #000;
 }
+
+/* ========================================================================= */
+/*                           RESPONSIVE UTILITIES                            */
+/* ========================================================================= */
+
+.grid-2-1 { display: grid; grid-template-columns: 2fr 1fr; gap: 32px; }
+.grid-3-1 { display: grid; grid-template-columns: 3fr 1fr; gap: 32px; }
+.grid-1-1 { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+.grid-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px; }
+.grid-small-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
+.grid-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-bottom: 40px; }
+.grid-schedule { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; overflow-x: auto; padding-bottom: 12px; }
+.flex-column-mobile { display: flex; justify-content: space-between; }
+
+/* ========================================================================= */
+/*                           MOBILE STYLES (Max-Width: 768px)                */
+/* ========================================================================= */
+
+@media (max-width: 768px) {
+    /* Hide Desktop Sidebar */
+    .sidebar { display: none !important; }
+
+    /* Main Content Padding Fixes */
+    .main-content {
+        padding: 16px;
+        padding-bottom: 90px; /* Space for Bottom Bar */
+    }
+
+    /* Convert Grids to Stacks */
+    .grid-2-1, .grid-3-1, .grid-1-1 { grid-template-columns: 1fr; gap: 16px; }
+    
+    .grid-stats {
+        grid-template-columns: 1fr 1fr; /* 2 columns on mobile */
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+
+    .grid-cards { grid-template-columns: 1fr; }
+
+    /* Make banners flow better */
+    .flex-column-mobile {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 16px;
+    }
+
+    /* Overwrite inline styles for smaller paddings */
+    .glass { padding: 16px !important; }
+    h2 { font-size: 1.8rem !important; }
+    
+    .professor-photo { display: none !important; }
+    
+    .login-card-container { width: 95% !important; margin: 0 auto; }
+}
+
+/* ========================================================================= */
+/*                           BOTTOM NAVIGATION BAR (Mobile)                  */
+/* ========================================================================= */
+.mobile-nav {
+    display: none;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: var(--bg-sidebar);
+    border-top: 1px solid var(--border);
+    z-index: 999;
+    padding-bottom: env(safe-area-inset-bottom);
+}
+
+@media (max-width: 768px) {
+    .mobile-nav {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        height: 70px;
+    }
+}
+
+.mobile-nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.70rem;
+    gap: 4px;
+    flex: 1;
+    height: 100%;
+    cursor: pointer;
+    background: transparent;
+    border: none;
+}
+
+.mobile-nav-item.active { color: var(--primary); font-weight: 600; }
+.mobile-nav-item i { width: 22px; height: 22px; }

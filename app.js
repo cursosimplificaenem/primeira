@@ -176,6 +176,11 @@ function init() {
         }
     });
 
+    if (!state.courses || !Array.isArray(state.courses) || (state.courses.length > 0 && !state.courses[0].id)) {
+        state.courses = [];
+        localStorage.setItem('courses', JSON.stringify([]));
+    }
+
     if (migrated) saveState();
 
     // Inicia a carga de dados em DataLayer
@@ -614,6 +619,7 @@ function render() {
                     ${renderCurrentView()}
                 </div>
             </main>
+              `${renderMobileNav()}
         `;
     }
     
@@ -829,7 +835,7 @@ function renderStudentDashboard() {
                     </div>
                 </div>
 
-                <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; overflow-x: auto; padding-bottom: 12px; min-width: 0;">
+                <div class="grid-schedule">
                     ${currentWeekData.days.map(d => {
                         const style = getDayStyle(d.day, d.teacher);
                         return `
@@ -874,7 +880,7 @@ function renderStudentDashboard() {
             </section>
 
             <!-- Bottom Grid (Resumo e Próximos Passos) -->
-            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 32px;">
+            <div class="grid-2-1">
                 <div class="glass" style="padding: 32px;">
                     <h3 class="mb-6">Continue de onde parou</h3>
                     ${(() => {
@@ -968,7 +974,7 @@ function renderStudentDashboard() {
 function renderCourses() {
     return `
         <h2 class="mb-8">Biblioteca de Cursos</h2>
-        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px;">
+        <div class="grid-cards">
             ${state.courses.map(c => {
                 const totalLessons = c.curriculum ? c.curriculum.reduce((acc, chap) => acc + (chap.lessons ? chap.lessons.length : 0), 0) : 0;
                 const firstLessonId = c.curriculum?.[0]?.lessons?.[0]?.id;
@@ -1054,7 +1060,7 @@ function renderLessonView() {
             </div>
         ` : ''}
         
-        <div style="display: grid; grid-template-columns: 3fr 1fr; gap: 32px;">
+        <div class="grid-3-1">
             <div>
                 <div class="glass" style="aspect-ratio: 16/9; margin-bottom: 24px; overflow: hidden; position: relative; background: #000; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
                     <iframe 
@@ -1207,7 +1213,7 @@ function renderSimulados() {
         <h2 class="mb-4">Simulados Simplifica</h2>
         <p class="mb-8">Coloque seu conhecimento à prova com nossos simulados autorais e simulados de sexta-feira.</p>
         
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px;">
+        <div class="grid-1-1">
             <div class="glass" style="padding: 32px;">
                 <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 24px;">
                     <div style="background: var(--primary); padding: 12px; border-radius: 12px; color: white;">
@@ -1247,7 +1253,7 @@ function renderSimulados() {
                     <h4 style="margin-bottom: 12px;">Preencher Gabarito</h4>
                     <p style="font-size: 0.85rem; margin-bottom: 20px;">Insira suas respostas para o simulado de hoje e receba feedback ao vivo.</p>
                     
-                    <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 20px;">
+                    <div class="grid-schedule">
                         ${Array.from({length: 10}).map((_, i) => `
                             <div>
                                 <div style="font-size: 0.7rem; font-weight: 700; margin-bottom: 4px;">Q${i+1}</div>
@@ -1314,7 +1320,7 @@ function renderCronograma() {
         </div>
 
         <div class="glass" style="padding: 24px;">
-            <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px;">
+            <div class="grid-schedule">
                 ${['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta'].map(day => `
                     <div style="text-align: center;">
                         <h4 style="margin-bottom: 16px; color: ${state.theme === 'dark' ? 'var(--secondary)' : 'var(--primary)'}; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px;">${day}</h4>
@@ -1346,7 +1352,7 @@ function renderMentoria() {
         <h2 class="mb-4">Mentoria & Aulas Privadas</h2>
         <p class="mb-8">Acesso exclusivo para impulsionar seu desempenho individual.</p>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px;">
+        <div class="grid-1-1">
             <!-- Aulas Particulares -->
             <div class="glass" style="padding: 32px; position: relative; overflow: hidden;">
                 ${tutoringLocked ? `
@@ -1401,7 +1407,7 @@ function renderDownloads() {
     return `
         <h2 class="mb-8">Download de Provas Antigas</h2>
         <div class="glass" style="padding: 24px;">
-            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px;">
+            <div class="grid-small-cards">
                 ${['ENEM', 'FUVEST', 'UNICAMP', 'UNESP', 'UERJ', 'UFSC', 'UFRGS'].map(v => `
                     <div class="glass" style="padding: 20px; text-align: center; cursor: pointer; background: var(--bg-main);">
                         <div style="background: var(--accent); width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; margin: 0 auto 12px;">
@@ -1421,7 +1427,7 @@ function renderAdminDashboard() {
     return `
         <h2 class="mb-8">Visão Geral da Plataforma</h2>
         
-        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-bottom: 40px;">
+        <div class="grid-stats">
             <div class="glass" style="padding: 24px;">
                 <div style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 8px;">PROGRESSO MÉDIO</div>
                 <div style="font-size: 2rem; font-weight: 700; color: ${state.theme === 'dark' ? 'var(--secondary)' : 'var(--primary)'};">${stats.avgProgress}%</div>
@@ -1446,7 +1452,7 @@ function renderAdminDashboard() {
             </div>
         </div>
 
-        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 32px;">
+        <div class="grid-2-1">
             <div class="glass" style="padding: 32px;">
                 <h3 class="mb-6">Atividade de Estudos (Últimos 7 dias)</h3>
                 <div style="height: 300px; display: flex; align-items: flex-end; justify-content: space-between; padding-top: 20px;">
@@ -1699,7 +1705,7 @@ function renderAdminContent() {
             </div>
         </div>
         
-        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 24px;">
+        <div class="grid-cards">
             ${state.courses.map(c => {
                 const totalLessons = c.curriculum ? c.curriculum.reduce((acc, chap) => acc + (chap.lessons ? chap.lessons.length : 0), 0) : 0;
                 const isEditing = state.adminQuickEditingCourseId === c.id;
@@ -1816,7 +1822,7 @@ function renderDesempenho() {
         <h2 class="mb-4">Meu Desempenho Acadêmico</h2>
         <p class="mb-8">Acompanhe seu progresso real em cada área da plataforma Simplifica.</p>
 
-        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-bottom: 40px;">
+        <div class="grid-stats">
             <div class="glass" style="padding: 24px; text-align: center;">
                 <div style="color: var(--text-muted); font-size: 0.75rem; font-weight: 700; margin-bottom: 8px; text-transform: uppercase;">Planejamento</div>
                 <div style="font-size: 2rem; font-weight: 700;">${state.planning.filter(p => p.willOccur).length}/52</div>
@@ -1839,7 +1845,7 @@ function renderDesempenho() {
             </div>
         </div>
 
-        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 32px;">
+        <div class="grid-2-1">
             <div class="glass" style="padding: 32px;">
                 <h3 class="mb-6">Progresso por Matéria</h3>
                 <div style="display: flex; flex-direction: column; gap: 24px;">
@@ -1879,7 +1885,7 @@ function renderProfile() {
     return `
         <h2 class="mb-8">Meu Perfil</h2>
         
-        <div style="display: grid; grid-template-columns: 300px 1fr; gap: 32px;">
+        <div class="grid-3-1">
             <div class="glass" style="padding: 32px; text-align: center;">
                 <div style="width: 120px; height: 120px; border-radius: 30px; background: var(--primary); margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; color: white; font-size: 3rem; font-weight: 700;">
                     ${state.user.name.charAt(0)}
@@ -1896,7 +1902,7 @@ function renderProfile() {
 
             <div class="glass" style="padding: 32px;">
                 <h3 class="mb-6">Informações Pessoais</h3>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 32px;">
+                <div class="grid-1-1">
                     <div>
                         <label style="display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 8px;">Nome Completo</label>
                         <input type="text" class="glass" style="width: 100%; padding: 12px; background: var(--bg-main); border: 1px solid var(--border); color: var(--text-main);" value="${state.user.name}">
@@ -2059,3 +2065,30 @@ window.viewAdminLesson = function(lessonId) {
 
 // Start the app
 window.addEventListener('DOMContentLoaded', init);
+
+
+
+function renderMobileNav() {
+    const mobileMenuItems = state.user.role === 'student' ? [
+        { id: 'dashboard', icon: 'layout-dashboard', label: 'In�cio' },
+        { id: 'courses', icon: 'book-open', label: 'Cursos' },
+        { id: 'cronograma', icon: 'calendar', label: 'Rotina' },
+        { id: 'profile', icon: 'user', label: 'Perfil' }
+    ] : [
+        { id: 'admin_dashboard', icon: 'bar-chart-3', label: 'M�tricas' },
+        { id: 'admin_content', icon: 'upload-cloud', label: 'Aulas' },
+        { id: 'profile', icon: 'user', label: 'Perfil' }
+    ];
+
+    return 
+        <nav class="mobile-nav glass">
+             + mobileMenuItems.map(item => 
+                <button class="mobile-nav-item  + (state.currentView === item.id ? 'active' : '') + " onclick="navigate(' + item.id + ')">
+                    <i data-lucide=" + item.icon + "></i>
+                    <span> + item.label + </span>
+                </button>
+            ).join('') + 
+        </nav>
+    ;
+}
+
